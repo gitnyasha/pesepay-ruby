@@ -54,7 +54,7 @@ end
 # reason "Subscription payment", customer email "customer@example.com", 
 # customer phone "1234567890", customer name "John Doe", and payment method required fields 
 # "cardNumber" and "expiryDate"
-response = payment.make_seamless_payment(50, 'USD', '123456', 'Subscription payment', 'customer@example.com', '1234567890', 'John Doe', {'cardNumber': '1234123412341234', 'expiryDate': '01/23'})
+response = payment.make_seamless_payment(50, 'USD', '123456', 'Subscription payment', 'customer@example.com', '1234567890', 'John Doe', {"creditCardExpiryDate": "03/23", "creditCardNumber": "1231231231231234", "creditCardSecurityNumber": "000"})
 # if paying using ecocash
 response = payment.make_seamless_payment(50, 'USD', '123456', 'Subscription payment', 'customer@example.com', '1234567890', 'John Doe', {'customerPhoneNumber': '0777777777'})
 if response.success
@@ -81,7 +81,7 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/pesepay. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [code of conduct](https://github.com/[USERNAME]/pesepay/blob/master/CODE_OF_CONDUCT.md).
+Bug reports and pull requests are welcome on GitHub at https://github.com/gitnyasha/pesepay. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [code of conduct](https://github.com/gitnyasha/pesepay/blob/master/CODE_OF_CONDUCT.md).
 
 ## License
 
@@ -89,4 +89,4 @@ The gem is available as open source under the terms of the [MIT License](https:/
 
 ## Code of Conduct
 
-Everyone interacting in the Pesepay project's codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/[USERNAME]/pesepay/blob/master/CODE_OF_CONDUCT.md).
+Everyone interacting in the Pesepay project's codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/gitnyasha/pesepay/blob/master/CODE_OF_CONDUCT.md).
