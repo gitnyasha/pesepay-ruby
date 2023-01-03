@@ -1,8 +1,6 @@
 # Pesepay
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/pesepay`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
+Pesepay is a payment gateway ruby gem that allows you to make and manage payments online.
 
 ## Installation
 
@@ -22,7 +20,15 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+It has three main methods:
+
+- initiate_transaction(amount, currencyCode, reasonForPayment): This method initiates a transaction with the specified amount, currency code, and reason for payment. It returns a Response object with a reference number, poll URL, and redirect URL.
+
+- make_seamless_payment(amount, currencyCode, reference, reasonForPayment, customerEmail, customerPhone, customerName, paymentMethodRequiredFields): This method makes a seamless payment with the specified parameters. It returns a Response object with a reference number, transaction ID, and payment URL.
+
+- get_payment_method_code(currency_code): This method returns the payment method code for the specified currency code.
+
+To use the gem, you will need to require it and create a new Pesepay object with your integration key, encryption key, return URL, and result URL. You can then call any of the above methods on the object to make payments or retrieve payment information.
 
 ## Development
 
