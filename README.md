@@ -30,6 +30,49 @@ It has three main methods:
 
 To use the gem, you will need to require it and create a new Pesepay object with your integration key, encryption key, return URL, and result URL. You can then call any of the above methods on the object to make payments or retrieve payment information.
 
+Here is an example of how you might use the Pesepay gem in your code:
+
+```ruby
+require 'pesepay'
+
+# Create a new Pesepay object with your integration key, encryption key, return URL, and result URL
+payment = Pesepay::Pesepay.new('INTEGRATION_KEY', 'ENCRYPTION_KEY', 'https://www.example.com/return', 'https://www.example.com/result')
+
+# Initiate a transaction for $100 with the currency code "USD" and the reason "Online purchase"
+response = payment.initiate_transaction(100, 'USD', 'Online purchase')
+
+if response.success
+  # Transaction was successful, so you can redirect the user to the redirect URL
+  poll_url = response.pollUrl
+  redirect_to response.redirectUrl
+else
+  # There was an error, so you can display the error message to the user
+  puts response.message
+end
+
+# Make a seamless payment for $50 with the currency code "USD", reference number "123456", 
+# reason "Subscription payment", customer email "customer@example.com", 
+# customer phone "1234567890", customer name "John Doe", and payment method required fields 
+# "cardNumber" and "expiryDate"
+response = payment.make_seamless_payment(50, 'USD', '123456', 'Subscription payment', 'customer@example.com', '1234567890', 'John Doe', {'cardNumber': '1234123412341234', 'expiryDate': '01/23'})
+# if paying using ecocash
+response = payment.make_seamless_payment(50, 'USD', '123456', 'Subscription payment', 'customer@example.com', '1234567890', 'John Doe', {'customerPhoneNumber': '0777777777'})
+if response.success
+  # Payment was successful, so you can save poll_url and referenceNumber (used to check the status of a transaction)
+  reference_number = response->referenceNumber;
+  poll_url = response->pollUrl;
+else
+  # There was an error, so you can display the error message to the user
+  puts response.message
+end
+
+# Get the payment method code for the currency code "USD"
+payment_method_code = payment.get_payment_method_code('USD')
+
+puts payment_method_code
+
+```
+
 ## Development
 
 After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
