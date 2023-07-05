@@ -38,13 +38,15 @@ require 'pesepay'
 # Create a new Pesepay object with your integration key, encryption key, return URL, and result URL
 pesepay = Pesepay::Pesepay.new('INTEGRATION_KEY', 'ENCRYPTION_KEY')
 
-# Initiate a transaction for $100 with the currency code "USD" and the reason "Online purchase"
-response = pesepay.initiate_transaction(100, 'ZWL', 'Online purchase', "Invoice 1")
+# Create a transaction for $100 with the currency code "USD" and the reason "Online purchase"
+transaction = pesepay.create_transaction(100, "USD", "Pizza",11.99)
+
+response = pesepay.initiate_transaction(transaction)
 
 if response.success
   # Transaction was successful, so you can redirect the user to the redirect URL
-  poll_url = response.poll_url
-  redirect_to response.redirect_url
+  poll_url = response.pollUrl
+  redirect_to response.redirectUrl
   else
   # There was an error, so you can display the error message to the user
   puts response.message
@@ -55,9 +57,16 @@ end
 # reason "Subscription payment", customer email "customer@example.com",
 # customer phone "1234567890", customer name "John Doe", and payment method required fields
 # "cardNumber" and "expiryDate"
-response = pesepay.make_seamless_payment(50, 'USD', '123456', 'Subscription payment', 'customer@example.com', '1234567890', 'John Doe', {"creditCardExpiryDate": "03/23", "creditCardNumber": "1231231231231234", "creditCardSecurityNumber": "000"})
+payment = pesepay.create_seamless_transaction("USD", "PZW204", "customer@example.com", "555-555-1212", "John Smith")
+payment_method_required_fields = { "creditCardExpiryDate": "09/23", "creditCardNumber": "4867960000005461", "creditCardSecurityNumber": "608" }
+response = pesepay.make_seamless_payment(payment, "Test payment", 100, payment_method_required_fields, "123453")
+
 # if paying using ecocash
-response = pesepay.make_seamless_payment(50, 'USD', '123456', 'Subscription payment', 'customer@example.com', '1234567890', 'John Doe', {'customerPhoneNumber': '0777777777'})
+payment = pesepay.create_seamless_transaction("USD", "PZW204", "customer@example.com", "555-555-1212", "John Smith")
+payment_method_required_fields = {'customerPhoneNumber': '0777777777'}
+
+response = pesepay.make_seamless_payment(payment, "Test payment", 100, payment_method_required_fields, "123453")
+
 if response.success
   # Payment was successful, so you can save poll_url and referenceNumber (used to check the status of a transaction)
   reference_number = response->referenceNumber;
