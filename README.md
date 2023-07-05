@@ -20,68 +20,106 @@ Or install it yourself as:
 
 ## Usage
 
-It has three main methods:
+- initiate_transaction is a method in the Pesepay class that allows merchants to initiate a payment transaction. When called, it sends a request to the Pesepay API with the transaction details, such as the amount, currency, description, and reference number. If the request is successful, the method returns a Response object containing a reference number, poll URL, and redirect URL. The reference number can be used for tracking purposes, while the poll URL and redirect URL are used for further processing and redirecting the customer to complete the payment.
 
-- initiate_transaction(amount, currencyCode, reasonForPayment): This method initiates a transaction with the specified amount, currency code, and reason for payment. It returns a Response object with a reference number, poll URL, and redirect URL.
-
-- make_seamless_payment(amount, currencyCode, reference, reasonForPayment, customerEmail, customerPhone, customerName, paymentMethodRequiredFields): This method makes a seamless payment with the specified parameters. It returns a Response object with a reference number, transaction ID, and payment URL.
+- make_seamless_payment is another method in the Pesepay class, designed for seamless payment processing. It enables merchants to process credit card payments without redirecting customers to the Pesepay platform. This method also sends a request to the Pesepay API with the necessary payment details, and if the request is successful, it returns a Response object with a reference number, poll URL, and redirect URL. These URLs are crucial for handling the payment process and communicating the status back to the merchant's platform. Additionally, this method requires specific payment method details, like credit card information, to perform the seamless payment.
 
 - get_payment_method_code(currency_code): This method returns the payment method code for the specified currency code.
 
-To use the gem, you will need to require it and create a new Pesepay object with your integration key, encryption key, return URL, and result URL. You can then call any of the above methods on the object to make payments or retrieve payment information.
 
 Here is an example of how you might use the Pesepay gem in your code:
 
 ```ruby
 require 'pesepay'
 
-# Create a new Pesepay object with your integration key, encryption key, return URL, and result URL
+# Create a new Pesepay object with your integration key and encryption key
+
 pesepay = Pesepay::Pesepay.new('INTEGRATION_KEY', 'ENCRYPTION_KEY')
 
-# Create a transaction for $100 with the currency code "USD" and the reason "Online purchase"
-transaction = pesepay.create_transaction(100, "USD", "Pizza",11.99)
+# Set the return URL and result URL for handling the transaction status
+
+pesepay.result_url = "http://example.com/gateway/return"
+pesepay.return_url = "http://example.com/gateway/return"
+
+# Create a transaction for $100 with the currency code "USD" and the reason "Pizza"
+
+transaction = pesepay.create_transaction(100, "USD", "Pizza", 11.99)
+
+# Initiate the transaction and get the response from the API
 
 response = pesepay.initiate_transaction(transaction)
 
 if response.success
-  # Transaction was successful, so you can redirect the user to the redirect URL
-  poll_url = response.pollUrl
-  redirect_to response.redirectUrl
-  else
-  # There was an error, so you can display the error message to the user
-  puts response.message
+
+# Transaction initiation was successful, so redirect the user to the provided redirect URL
+
+poll_url = response.pollUrl
+redirect_to response.redirectUrl
+else
+
+# There was an error, so display the error message to the user
+
+puts response.message
 end
 
+# Make a seamless payment using credit card for $50 with the currency code "USD"
 
-# Make a seamless payment for $50 with the currency code "USD", reference number "123456",
-# reason "Subscription payment", customer email "customer@example.com",
-# customer phone "1234567890", customer name "John Doe", and payment method required fields
-# "cardNumber" and "expiryDate"
-payment = pesepay.create_seamless_transaction("USD", "PZW204", "customer@example.com", "555-555-1212", "John Smith")
-payment_method_required_fields = { "creditCardExpiryDate": "09/23", "creditCardNumber": "4867960000005461", "creditCardSecurityNumber": "608" }
-response = pesepay.make_seamless_payment(payment, "Test payment", 100, payment_method_required_fields, "123453")
+# and other required payment details
 
-# if paying using ecocash
 payment = pesepay.create_seamless_transaction("USD", "PZW204", "customer@example.com", "555-555-1212", "John Smith")
-payment_method_required_fields = {'customerPhoneNumber': '0777777777'}
+payment_method_required_fields = {
+"creditCardExpiryDate": "09/23",
+"creditCardNumber": "4867960000005461",
+"creditCardSecurityNumber": "608"
+}
 
 response = pesepay.make_seamless_payment(payment, "Test payment", 100, payment_method_required_fields, "123453")
 
 if response.success
-  # Payment was successful, so you can save poll_url and referenceNumber (used to check the status of a transaction)
-  reference_number = response->referenceNumber;
-  poll_url = response->pollUrl;
+
+# Payment was successful, so save the reference number and poll URL for checking the transaction status
+
+reference_number = response.referenceNumber
+poll_url = response.pollUrl
 else
-  # There was an error, so you can display the error message to the user
-  puts response.message
+
+# There was an error, so display the error message to the user
+
+puts response.message
+end
+
+# If paying using ecocash, provide the required payment details for ecocash method
+
+payment = pesepay.create_seamless_transaction("USD", "PZW204", "customer@example.com", "555-555-1212", "John Smith")
+payment_method_required_fields = {
+'customerPhoneNumber': '0777777777'
+}
+
+response = pesepay.make_seamless_payment(payment, "Test payment", 100, payment_method_required_fields, "123453")
+
+if response.success
+
+# Payment was successful, so save the reference number and poll URL for checking the transaction status
+
+reference_number = response.referenceNumber
+poll_url = response.pollUrl
+else
+
+# There was an error, so display the error message to the user
+
+puts response.message
 end
 
 # Get the payment method code for the currency code "USD"
+
 payment_method_code = payment.get_payment_method_code('USD')
 
 puts payment_method_code
 
+
 ```
+
+Make sure to replace 'INTEGRATION_KEY' and 'ENCRYPTION_KEY' with your actual Pesepay integration and encryption keys. Additionally, adjust the URLs and payment details accordingly to match your application's requirements.
 
 ## Development
 
