@@ -36,6 +36,11 @@ require 'pesepay'
 
 pesepay = Pesepay::Pesepay.new('INTEGRATION_KEY', 'ENCRYPTION_KEY')
 
+```
+### To redirect to pesepay page and make paymnets
+
+```ruby
+
 # Set the return URL and result URL for handling the transaction status
 
 pesepay.result_url = "http://example.com/gateway/return"
@@ -61,11 +66,10 @@ else
 
 puts response.message
 end
+```
+### To Make a seamless payment using credit card for $50 with the currency code "USD"
 
-# Make a seamless payment using credit card for $50 with the currency code "USD"
-
-# and other required payment details
-
+```ruby
 payment = pesepay.create_seamless_transaction("USD", "PZW204", "customer@example.com", "555-555-1212", "John Smith")
 payment_method_required_fields = {
 "creditCardExpiryDate": "09/23",

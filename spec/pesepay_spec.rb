@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe Pesepay do
-  # create a new instance of Pesepay with keys from the .env file
   pesepay = Pesepay::Pesepay.new("Integration_key", "encryption_key")
   pesepay.result_url = "http://example.com/gateway/return"
   pesepay.return_url = "http://example.com/gateway/return"
