@@ -36,27 +36,28 @@ Here is an example of how you might use the Pesepay gem in your code:
 require 'pesepay'
 
 # Create a new Pesepay object with your integration key, encryption key, return URL, and result URL
-payment = Pesepay::Pesepay.new('INTEGRATION_KEY', 'ENCRYPTION_KEY', 'https://www.example.com/return', 'https://www.example.com/result')
+pesepay = Pesepay::Pesepay.new('INTEGRATION_KEY', 'ENCRYPTION_KEY')
 
 # Initiate a transaction for $100 with the currency code "USD" and the reason "Online purchase"
-response = payment.initiate_transaction(100, 'USD', 'Online purchase')
+response = pesepay.initiate_transaction(100, 'ZWL', 'Online purchase', "Invoice 1")
 
 if response.success
   # Transaction was successful, so you can redirect the user to the redirect URL
-  poll_url = response.pollUrl
-  redirect_to response.redirectUrl
-else
+  poll_url = response.poll_url
+  redirect_to response.redirect_url
+  else
   # There was an error, so you can display the error message to the user
   puts response.message
 end
 
-# Make a seamless payment for $50 with the currency code "USD", reference number "123456", 
-# reason "Subscription payment", customer email "customer@example.com", 
-# customer phone "1234567890", customer name "John Doe", and payment method required fields 
+
+# Make a seamless payment for $50 with the currency code "USD", reference number "123456",
+# reason "Subscription payment", customer email "customer@example.com",
+# customer phone "1234567890", customer name "John Doe", and payment method required fields
 # "cardNumber" and "expiryDate"
-response = payment.make_seamless_payment(50, 'USD', '123456', 'Subscription payment', 'customer@example.com', '1234567890', 'John Doe', {"creditCardExpiryDate": "03/23", "creditCardNumber": "1231231231231234", "creditCardSecurityNumber": "000"})
+response = pesepay.make_seamless_payment(50, 'USD', '123456', 'Subscription payment', 'customer@example.com', '1234567890', 'John Doe', {"creditCardExpiryDate": "03/23", "creditCardNumber": "1231231231231234", "creditCardSecurityNumber": "000"})
 # if paying using ecocash
-response = payment.make_seamless_payment(50, 'USD', '123456', 'Subscription payment', 'customer@example.com', '1234567890', 'John Doe', {'customerPhoneNumber': '0777777777'})
+response = pesepay.make_seamless_payment(50, 'USD', '123456', 'Subscription payment', 'customer@example.com', '1234567890', 'John Doe', {'customerPhoneNumber': '0777777777'})
 if response.success
   # Payment was successful, so you can save poll_url and referenceNumber (used to check the status of a transaction)
   reference_number = response->referenceNumber;
