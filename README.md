@@ -94,7 +94,7 @@ end
 
 # If paying using ecocash, provide the required payment details for ecocash method
 
-payment = pesepay.create_seamless_transaction("USD", "PZW204", "customer@example.com", "555-555-1212", "John Smith")
+payment = pesepay.create_seamless_transaction("USD", "PZW211", "customer@example.com", "555-555-1212", "John Smith")
 payment_method_required_fields = {
 'customerPhoneNumber': '0777777777'
 }
