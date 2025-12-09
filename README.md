@@ -43,7 +43,7 @@ pesepay = Pesepay::Pesepay.new('INTEGRATION_KEY', 'ENCRYPTION_KEY')
 
 # Set the return URL and result URL for handling the transaction status
 
-pesepay.result_url = "http://example.com/gateway/return"
+pesepay.result_url = "http://example.com/gateway/result"
 pesepay.return_url = "http://example.com/gateway/return"
 
 # Create a transaction for $100 with the currency code "USD" and the reason "Pizza"
@@ -106,7 +106,7 @@ payment_method_required_fields = {
 'customerPhoneNumber': '0777777777'
 }
 
-response = pesepay.make_seamless_payment(payment, "Test payment", 100, payment_method_required_fields, "merchant_ref")
+response = pesepay.make_seamless_payment(payment, "Test payment", 100.00, payment_method_required_fields, "merchant_ref")
 
 if response.success
 
@@ -114,7 +114,7 @@ if response.success
 
 reference_number = response.referenceNumber
 poll_url = response.pollUrl
-# whole data
+# whole response data
 data = response.raw_data
 
 else
