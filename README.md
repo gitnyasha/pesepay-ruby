@@ -88,7 +88,7 @@ if response.success
 reference_number = response.reference_number
 poll_url = response.poll_url
 
-# whole data
+# whole response data
 data = response.raw_data
 else
 
