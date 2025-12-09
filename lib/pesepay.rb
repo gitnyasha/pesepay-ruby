@@ -57,7 +57,7 @@ module Pesepay
     end
 
     def check_payment(reference_number)
-      url = "https://api.pesepay.com/api/payments-engine/v1/payments/check-payment?referenceNumber=#{reference_number}"
+      url = "https://api.pesepay.com/api/payments-engine/v1/payments/check-payment?reference_number=#{reference_number}"
       poll_transaction(url)
     end
 
@@ -122,10 +122,10 @@ module Pesepay
         inner_payload = response_body["payload"]
         raw_response = decrypt(inner_payload, @encryption_key)
         json_string = JSON.parse(raw_response)
-        ref_no = json_string["referenceNumber"]
-        poll_url = json_string["pollUrl"]
-        redirect_url = json_string["redirectUrl"]
-        Response.new(true, referenceNumber: ref_no, pollUrl: poll_url, redirectUrl: redirect_url)
+        ref_no = json_string["reference_number"]
+        poll_url = json_string["poll_url"]
+        redirect_url = json_string["redirect_url"]
+        Response.new(true, reference_number: ref_no, poll_url: poll_url, redirect_url: redirect_url, json_string: json_string)
       else
         message = JSON.parse(response.body)["message"]
         Response.new(false, message: message)
@@ -138,11 +138,11 @@ module Pesepay
         inner_payload = response_body["payload"]
         raw_response = decrypt(inner_payload)
         json_string = JSON.parse(raw_response)
-        reference_number = json_string["referenceNumber"]
-        poll_url = json_string["pollUrl"]
+        reference_number = json_string["reference_number"]
+        poll_url = json_string["poll_url"]
         paid = json_string["transactionStatus"] == "SUCCESS"
 
-        StatusResponse.new(reference_number, poll_url, paid)
+        StatusResponse.new(reference_number, poll_url, paid, json_string)
       else
         message = JSON.parse(response.body)["message"]
         StatusResponse.new(nil, nil, false, message)
@@ -216,24 +216,28 @@ module Pesepay
   end
 
   class Response
-    attr_reader :success, :referenceNumber, :pollUrl, :redirectUrl, :message
+    attr_reader :success, :reference_number, :poll_url, :redirect_url, :message, :raw_data
 
-    def initialize(success, referenceNumber: nil, pollUrl: nil, redirectUrl: nil, message: nil)
+    def initialize(success, reference_number: nil, poll_url: nil, redirect_url: nil, message: nil, json_string: nil)
       @success = success
-      @referenceNumber = referenceNumber
-      @pollUrl = pollUrl
-      @redirectUrl = redirectUrl
+      @reference_number = reference_number
+      @poll_url = poll_url
+      @redirect_url = redirect_url
       @message = message
+      @raw_data = json_string
     end
+
+    
   end
 
   class StatusResponse
-    attr_reader :referenceNumber, :pollUrl, :paid
+    attr_reader :reference_number, :poll_url, :paid, :raw_data
 
-    def initialize(referenceNumber: nil, pollUrl: nil, paid: false)
+    def initialize(reference_number: nil, poll_url: nil, paid: false, json_string: nil)
       @paid = paid
-      @referenceNumber = referenceNumber
-      @pollUrl = pollUrl
+      @reference_number = reference_number
+      @poll_url = poll_url
+      @raw_data = json_string
     end
   end
 

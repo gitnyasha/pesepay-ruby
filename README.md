@@ -26,7 +26,6 @@ Or install it yourself as:
 
 - get_payment_method_code(currency_code): This method returns the payment method code for the specified currency code.
 
-
 Here is an example of how you might use the Pesepay gem in your code:
 
 ```ruby
@@ -37,6 +36,7 @@ require 'pesepay'
 pesepay = Pesepay::Pesepay.new('INTEGRATION_KEY', 'ENCRYPTION_KEY')
 
 ```
+
 ### To redirect to pesepay page and make paymnets
 
 ```ruby
@@ -67,24 +67,29 @@ else
 puts response.message
 end
 ```
+
 ### To Make a seamless payment using credit card for $50 with the currency code "USD"
 
 ```ruby
 payment = pesepay.create_seamless_transaction("USD", "PZW204", "customer@example.com", "555-555-1212", "John Smith")
+
+# visa
 payment_method_required_fields = {
 "creditCardExpiryDate": "09/23",
 "creditCardNumber": "4867960000005461",
 "creditCardSecurityNumber": "608"
 }
 
-response = pesepay.make_seamless_payment(payment, "Test payment", 100, payment_method_required_fields, "123453")
+response = pesepay.make_seamless_payment(payment, "Test payment", 100, payment_method_required_fields, "merchant_ref")
 
 if response.success
 
 # Payment was successful, so save the reference number and poll URL for checking the transaction status
+reference_number = response.reference_number
+poll_url = response.poll_url
 
-reference_number = response.referenceNumber
-poll_url = response.pollUrl
+# whole data
+data = response.raw_data
 else
 
 # There was an error, so display the error message to the user
@@ -92,14 +97,16 @@ else
 puts response.message
 end
 
-# If paying using ecocash, provide the required payment details for ecocash method
+# If paying using mobile money, provide the required payment details
 
 payment = pesepay.create_seamless_transaction("USD", "PZW211", "customer@example.com", "555-555-1212", "John Smith")
+
+# direct mobile payments e.g ecocash, innbucs
 payment_method_required_fields = {
 'customerPhoneNumber': '0777777777'
 }
 
-response = pesepay.make_seamless_payment(payment, "Test payment", 100, payment_method_required_fields, "123453")
+response = pesepay.make_seamless_payment(payment, "Test payment", 100, payment_method_required_fields, "merchant_ref")
 
 if response.success
 
@@ -107,6 +114,9 @@ if response.success
 
 reference_number = response.referenceNumber
 poll_url = response.pollUrl
+# whole data
+data = response.raw_data
+
 else
 
 # There was an error, so display the error message to the user
